@@ -151,7 +151,7 @@
                 }
             });
         };
-        this.getMutualFriend = function (friendFacebookId, callback) {
+        this.getMutualFriends = function (friendFacebookId, callback) {
             FB.api('/me/mutualfriends/' + friendFacebookId, function (resp) {
                 callback(resp.data);
             });
@@ -173,14 +173,15 @@
             }
             (function () {
                 global.fbAsyncInit = function () {
-                    FB.init({
+                    var config = {
                         appId: fbAppId,
-                        channelUrl: fbJsSDKResource.channel,
                         status: true,
                         cookie: true,
                         xfbml: true,
                         oauth: true
-                    });
+                    };
+                    if (fbJsSDKResource.channel) config.channelUrl = fbJsSDKResource.channel;
+                    FB.init(config);
                     that.initialize();
                 };
             }).apply(global);
