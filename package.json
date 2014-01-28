@@ -1,0 +1,13 @@
+{
+    "name": "facebook-pure-browser",
+    "version": "0.1.9",
+    "description": "Helper to fetch all fb data at frontend/browser itself with no backend intervention.",
+    "dependencies": {
+        "uglify-js": "*",
+        "async": "*"
+    },
+    "scripts": {
+        "minify": "./node_modules/.bin/uglifyjs FaceBookDataProvider.js -o FaceBookDataProvider.min.js",
+        "build": "npm run-script minify; cp -rfv FaceBookDataProvider*.js example/js/"
+    }
+}
