@@ -8,6 +8,6 @@
     },
     "scripts": {
         "minify": "./node_modules/.bin/uglifyjs FaceBookDataProvider.js -o FaceBookDataProvider.min.js",
-        "build": "npm run-script minify; cp -rfv FaceBookDataProvider*.js example/js/"
+        "build": "npm run-script minify; cp -rfv FaceBookDataProvider*.js example/js/; cp -rfv node_modules/async/lib/async.js example/js/"
     }
 }

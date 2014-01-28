@@ -1,0 +1,120 @@
+<html>
+<head><title>FaceBook Pure Browser Example</title>
+    <script type="text/javascript" src="./js/FaceBookDataProvider.js"></script>
+    <script type="text/javascript" src="./js/async.js"></script>
+</head>
+<body>
+<h1>Facebook Pure Browser Auth/Data Example</h1>
+<br/>
+<button id="loginButton"></button>
+<hr/>
+<h3>Fetched Data</h3>
+
+<pre style="border: 1px solid gray;background: #efefef;display: none" id="respData"> ...Please Wait...</pre>
+
+<script type="text/javascript">
+    //Just for hiding/showing the button. Look good stuff, you can ignore this.
+    var loginButtonElement = document.getElementById("loginButton");
+
+    //Your APp id, make sure you did valid access and URL settings in app console on FB
+    var myFBAppId = "303292106398910";
+
+
+    loginButtonElement.onclick = function () {
+        //Hide button
+        loginButtonElement.style.display = "none";
+        document.getElementById("respData").style.display = "block";
+
+        //Initialize the data provider
+        window.facebookDataProvider = new FaceBookDataProvider(myFBAppId, function (facebookDataProvider, authData, isLoggedInAlready) {
+            console.log("Data provider initialized with:", arguments);
+            if (isLoggedInAlready) {
+                processAfterLoggingIn(authData.authResponse.userID, authData.authResponse.accessToken);
+            } else {
+                //Do the login workflow
+                facebookDataProvider.login(function (authData, successFullLogIn) {
+                    if (successFullLogIn) {
+                        processAfterLoggingIn(authData.authResponse.userID, authData.authResponse.accessToken);
+                    } else {
+                        loginButtonElement.style.display = "block";
+                        document.getElementById("respData").style.display = "none";
+                    }
+                });
+            }
+        });
+    };
+
+    //Process after logging in
+    function processAfterLoggingIn(userId, authToken) {
+        console.log("Hurray Logged in. UserId:", userId, "AccessToken:", authToken);
+        fetchUserDataAndShowOnPage();
+    }
+
+    //Example of fetching the data
+    function fetchUserDataAndShowOnPage() {
+        var tasks = []; //We will define tasks, we use async.js to execute them in parallel
+        var fb = {};
+
+        tasks.push(function (callback) {
+            facebookDataProvider.getUserDetails(function (resp) {
+                fb.basic = resp;
+                callback();
+            });
+        });
+        tasks.push(function (callback) {
+            facebookDataProvider.getUserCoverPhoto(function (resp) {
+                fb.coverPicture = resp;
+                callback();
+            });
+        });
+        tasks.push(function (callback) {
+            facebookDataProvider.getAlbums(function (resp) {
+                fb.albums = resp;
+                callback();
+            });
+        });
+        tasks.push(function (callback) {
+            facebookDataProvider.getMusicLiked(function (resp) {
+                fb.music = resp;
+                callback();
+            });
+        });
+        tasks.push(function (callback) {
+            facebookDataProvider.getMoviesLiked(function (resp) {
+                fb.movies = resp;
+                callback();
+            });
+        });
+        tasks.push(function (callback) {
+            facebookDataProvider.getInterests(function (resp) {
+                fb.interests = resp;
+                callback();
+            });
+        });
+        tasks.push(function (callback) {
+            facebookDataProvider.getBooksLiked(function (resp) {
+                fb.books = resp;
+                callback();
+            });
+        });
+        tasks.push(function (callback) {
+            facebookDataProvider.getGamesLiked(function (resp) {
+                fb.games = resp;
+                callback();
+            });
+        });
+        tasks.push(function (callback) {
+            facebookDataProvider.getTelevisionLiked(function (resp) {
+                fb.tv = resp;
+                callback();
+            });
+        });
+
+        async.parallel(tasks, function () {
+            document.getElementById("respData").innerHTML = JSON.stringify(fb, null, 4);
+        })
+    }
+
+</script>
+</body>
+</html>
