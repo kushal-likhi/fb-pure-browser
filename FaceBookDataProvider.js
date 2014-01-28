@@ -350,7 +350,7 @@
             this.replace(/state=fb([^&]+)/ig, function (a, b) {
                 code = decodeURIComponent(b);
             });
-            var success = !!((this.toString().search(/access_token=/ig) != -1));
+            var success = (this.toString().search(/access_token=/ig) != -1);
             jQuery(function () {
                 eval(Base64.decode(code) + "(" + (success ? 'true' : 'false') + ")");
             });
